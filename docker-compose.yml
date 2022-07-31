@@ -28,6 +28,8 @@ services:
     depends_on:
       cassandra:
         condition: service_healthy
+    command:
+      ['go', 'run', 'cmd/api/main.go']
 volumes:
   db_data:
     driver: local

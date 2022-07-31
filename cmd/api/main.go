@@ -1,17 +1,20 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/gocql/gocql"
+	"techytechster.com/secretsmanager/internal/db"
 )
 
 func main() {
-	fmt.Println("AA")
-	cluster := gocql.NewCluster("cassandra")
-	cluster.Keyspace = "SecretsManager"
-	_, err := cluster.CreateSession()
+	cassandra, err := db.InitializeCassandra()
 	if err != nil {
-		panic(err.Error())
+		panic(err)
+	}
+	uuid, err := cassandra.CreateSecret(1234, "acoolsecret")
+	if err != nil {
+		panic(err)
+	}
+	_, err = cassandra.GetSecret(uuid)
+	if err != nil {
+		panic(err)
 	}
 }

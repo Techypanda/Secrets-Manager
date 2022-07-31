@@ -2,7 +2,7 @@ CREATE KEYSPACE IF NOT EXISTS "SecretsManager" WITH replication = {'class': 'Sim
 USE "SecretsManager";
 CREATE TABLE IF NOT EXISTS secrets(
   user_id int,
-  rotation_time time,
+  rotation_time timestamp,
   secret_id UUID PRIMARY KEY,
   encrypted_secret blob
 );
