@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  cassandra:
+    image: cassandra:4
+    ports:
+      - "9042:9042"
+    restart: always
+    volumes:
+      - db_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+  cassandratest:
+    image: cassandra:4
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - ./schema.cql:/schema.cql
+    command: /bin/bash -c "echo Loading Cassandra... && cqlsh cassandra -f /schema.cql"
+  api:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    depends_on:
+      cassandra:
+        condition: service_healthy
+volumes:
+  db_data:
+    driver: local
